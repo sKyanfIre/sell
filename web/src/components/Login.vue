@@ -28,7 +28,7 @@
             <button id="button-login" class="button">登录</button>
           </li>
           <li>
-            <span>还没有账号？</span>
+            <span>还没有账 号？</span>
             <a>创建一个账号</a>
           </li>
         </ul>
