@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzz.sell.dao.ModuleActionDao">
+    <resultMap id="moduleActionMap" type="com.zzz.sell.pojo.SysModuleAction">
+        <result column="actionid" property="actionId" jdbcType="VARCHAR"/>
+        <result column="moduleid" property="moduleId" jdbcType="VARCHAR"/>
+        <result column="actionname" property="actionName" jdbcType="VARCHAR"/>
+        <result column="actionurl" property="actionUrl" jdbcType="VARCHAR"/>
+        <result column="createtime" property="createTime" jdbcType="VARCHAR"/>
+        <result column="updatetime" property="updateTime" jdbcType="VARCHAR"/>
+        <result column="isvalid" property="isValid" jdbcType="VARCHAR"/>
+    </resultMap>
+    <select id="findAllActions" parameterType="string" resultMap="moduleActionMap">
+        select
+        actionid,moduleid,actionname,actionurl,
+        date_format(createtime,'%Y%m%d%H%i%s') as createtime,
+        date_format(updatetime,'%Y%m%d%H%i%s') as updatetime,
+        isvalid
+        from sys_module_action where isvalid = '1'
+    </select>
+
+</mapper>

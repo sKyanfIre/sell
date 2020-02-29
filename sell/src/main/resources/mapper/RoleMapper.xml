@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzz.sell.dao.RoleDao">
+    <resultMap id="roleMap" type="com.zzz.sell.pojo.SysRole">
+        <result column="roleid" property="roleId" jdbcType="VARCHAR"/>
+        <result column="rolename" property="roleName" jdbcType="VARCHAR"/>
+        <result column="createtime" property="createTime" jdbcType="VARCHAR"/>
+        <result column="updatetime" property="updateTime" jdbcType="VARCHAR"/>
+        <result column="isvalid" property="isValid" jdbcType="VARCHAR"/>
+    </resultMap>
+    <select id="findRolesByActionId" parameterType="string" resultMap="roleMap">
+        select
+        a.roleid,a.rolename,
+        date_format(a.createtime,'%Y%m%d%H%i%s') as createtime,
+        date_format(a.updatetime,'%Y%m%d%H%i%s') as updatetime,
+        a.isvalid
+        from sys_role a
+            inner join sys_role_module b on a.roleid = b.roleid
+        where b.actionid = #{actionId,jdbcType=VARCHAR}  and a.isvalid='1' and b.isvalid = '1'
+    </select>
+
+</mapper>
