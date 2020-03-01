@@ -1,7 +1,7 @@
 package com.zzz.sell.handler;
 
 import com.zzz.sell.contants.StatusCode;
-import com.zzz.sell.Utils.HttpUtil;
+import com.zzz.sell.utils.HttpUtil;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.stereotype.Component;

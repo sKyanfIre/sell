@@ -1,10 +1,8 @@
 package com.zzz.sell.handler;
 
-import com.zzz.sell.Utils.HttpUtil;
+import com.zzz.sell.utils.HttpUtil;
 import com.zzz.sell.contants.StatusCode;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
 
@@ -25,7 +23,7 @@ public class UrlAccessFailureHandler implements AccessDeniedHandler {
     @Override
     public void handle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AccessDeniedException e) throws IOException, ServletException {
         httpServletResponse.setContentType("text/html;charset=utf-8");
-        httpServletResponse.setStatus(403);
+        httpServletResponse.setStatus(200);
         PrintWriter pw = httpServletResponse.getWriter();
         HashMap<String,Object> result = new HashMap<>(1);
         result.put("RespCode",StatusCode.LOGIN_NOT_PERMIT);

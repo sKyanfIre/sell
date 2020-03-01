@@ -18,6 +18,10 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.access.expression.WebExpressionVoter;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
 import java.util.List;
@@ -72,7 +76,6 @@ public class SpringSecurityConfigure extends WebSecurityConfigurerAdapter {
         //添加自定义登陆认证
         auth.authenticationProvider(authenticationProvider);
     }
-
     /**
      * 具体配置登陆细节
      * @param http 登陆访问对象
@@ -83,15 +86,20 @@ public class SpringSecurityConfigure extends WebSecurityConfigurerAdapter {
         //关闭csrf
         http.csrf().disable()
                 //开放api路径
-                .authorizeRequests().antMatchers("/public/**","/five-service/blog-article/search/**","/five-service/blog-article/point","/five-service/blog-user/login").
+                .authorizeRequests().antMatchers("/public/**","/register").
                 permitAll()
                 .anyRequest().authenticated()
+                .and()
+                //添加自定义过滤器实现登录使用json格式报文
+                .addFilterAt(selfUsernamePasswordAuthencationFilter(), UsernamePasswordAuthenticationFilter.class)
+                // 允许跨域
+                .cors()
                 .and()
                 //关闭匿名登录
                 .anonymous().disable()
                 //开启自动配置的登陆功能
                 //自定义登录请求路径(post请求)
-                .formLogin().usernameParameter("username").passwordParameter("password")
+                .formLogin()
                 .loginProcessingUrl("/login")
                 //验证成功处理器
                 .successHandler(authenticationSuccessHandler)
@@ -118,9 +126,6 @@ public class SpringSecurityConfigure extends WebSecurityConfigurerAdapter {
                                 return o;
                             }
                     });
-//                .and()
-//                //添加token过滤器
-//                .addFilter(new TokenAuthenticationFilter(authenticationManagerBean()));
     }
 
     /**
@@ -142,6 +147,11 @@ public class SpringSecurityConfigure extends WebSecurityConfigurerAdapter {
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
+
+    /**
+     * 将自定义voter加入accessmanager
+     * @return
+     */
     @Bean
     public AccessDecisionManager accessDecisionManager() {
         List<AccessDecisionVoter<? extends Object>> decisionVoters
@@ -154,5 +164,30 @@ public class SpringSecurityConfigure extends WebSecurityConfigurerAdapter {
         return new UnanimousBased(decisionVoters);
     }
 
+    /**
+     * 允许跨域配置
+     * @return
+     */
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource(){
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("*"));
+        configuration.setAllowedMethods(Arrays.asList("GET","POST"));
+        configuration.setAllowCredentials(true);
+        configuration.setAllowedHeaders(Arrays.asList("Content-Type","Authorization"));
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**",configuration);
+        return source;
+    }
+    @Bean
+    public SelfUsernamePasswordAuthencationFilter selfUsernamePasswordAuthencationFilter() throws Exception{
+        SelfUsernamePasswordAuthencationFilter filter = new SelfUsernamePasswordAuthencationFilter();
+        //自定义认证成功处理器
+        filter.setAuthenticationSuccessHandler(authenticationSuccessHandler);
+        //自定义认证失败处理器
+        filter.setAuthenticationFailureHandler(authenticationFailureHandler);
+        filter.setAuthenticationManager(authenticationManagerBean()) ;
+        return filter;
+    }
 
 }

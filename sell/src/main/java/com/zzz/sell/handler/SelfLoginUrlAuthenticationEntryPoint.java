@@ -1,7 +1,7 @@
 package com.zzz.sell.handler;
 
 import com.zzz.sell.contants.StatusCode;
-import com.zzz.sell.Utils.HttpUtil;
+import com.zzz.sell.utils.HttpUtil;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 
@@ -20,7 +20,7 @@ public class SelfLoginUrlAuthenticationEntryPoint implements AuthenticationEntry
     @Override
     public void commence(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AuthenticationException e) throws IOException {
         httpServletResponse.setContentType("text/html;charset=utf-8");
-        httpServletResponse.setStatus(401);
+        httpServletResponse.setStatus(200);
         PrintWriter pw = httpServletResponse.getWriter();
         HashMap<String,Object> result = new HashMap<>(1);
         result.put("RespCode", StatusCode.NO_AUTH);

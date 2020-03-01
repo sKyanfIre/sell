@@ -1,4 +1,4 @@
-package com.zzz.sell.Utils;
+package com.zzz.sell.utils;
 
 import com.zzz.sell.contants.TokenContants;
 import org.slf4j.Logger;
