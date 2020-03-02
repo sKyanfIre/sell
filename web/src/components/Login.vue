@@ -12,23 +12,23 @@
             <span>账号</span>
           </li>
           <li>
-            <input id="input-username" type="text" name="username">
+            <input id="input-username" v-model="username" type="text" name="username">
           </li>
           <li>
             <span>密码</span>
           </li>
           <li>
-            <input id="input-password" type="password" name="password">
+            <input id="input-password" v-model="password" type="password" name="password">
           </li>
           <li>
             <input id="input-remember" type="checkbox" name="remember">
             <span>记住密码</span>
           </li>
           <li>
-            <button id="button-login" class="button">登录</button>
+            <button id="button-login" v-on:click="login()" class="button">登录</button>
           </li>
           <li>
-            <span>还没有账 号？</span>
+            <span>还没有账号？</span>
             <a>创建一个账号</a>
           </li>
         </ul>
@@ -42,13 +42,33 @@
 </template>
 
 <script>
+import CONSTANT from '@/assets/js/const.js'
+import router from '@/router'
 export default {
 
   name: 'Login',
   data () {
     return {
-      username: '911930036',
-      password: '123456'
+      username: '',
+      password: '',
+      baseurl: process.env.BASE_URL
+    }
+  },
+  methods: {
+    login: function () {
+      this.$post('/login', {
+        username: this.username,
+        password: this.password
+      })
+        .then(response => {
+          if (CONSTANT.STATUS_CODE.SUCCESS === response.RespCode) {
+            this.$message.success('登录成功')
+            router.push('/')
+          } else {
+            this.$message.error(response.RespDesc)
+          }
+        })
+      // alert(this.username + this.password)
     }
   }
 
